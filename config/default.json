@@ -1,0 +1,3 @@
+{
+    "mongoURI": "mongodb+srv://admin:admin@budgetbuddy0-mr5ee.mongodb.net/test?retryWrites=true"
+}
