@@ -17,6 +17,9 @@ const UserSchema = new mongoose.Schema({
   avatar: {
     type: String
   },
+  budgetIDs: {
+    type: [mongoose.Schema.Types.ObjectId]
+  },
   date: {
     type: Date,
     default: Date.now
