@@ -8,15 +8,21 @@ const User = require('../../models/User');
 const Budget = require('../../models/budget/Budget');
 
 // @route  GET api/budgets/list
-// @desc   Get Users Budgets
+// @desc   Get User's Budgets
 // @access Private
 router.get('/list', auth, async (req, res) => {
   try {
     const { budgetIDs } = await User.findById(req.user.id).select('budgetIDs');
     const budgets = new Array();
-    budgetIDs.forEach(id => {
-      budgets.push(id);
-    });
+
+    //needed for async await to work when pushin into budget, see link: https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404
+    await (async () => {
+      await Promise.all(
+        budgetIDs.map(async id => {
+          budgets.push(await Budget.findById(id).select(['name', 'accounts']));
+        })
+      );
+    })();
 
     res.json(budgets);
   } catch (err) {
@@ -74,11 +80,11 @@ router.post(
 // @desc   Edit and Existing Budget
 // @access Private
 router.post(
-  '/add',
+  '/edit',
   [
     auth,
     [
-      check('name', 'you must name your budget')
+      check('id', 'you must name your budget')
         .not()
         .isEmpty()
     ]

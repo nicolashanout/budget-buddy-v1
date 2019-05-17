@@ -5,6 +5,10 @@ const transactionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  account: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   transactionType: {
     type: String,
     enum: ['income', 'expense']

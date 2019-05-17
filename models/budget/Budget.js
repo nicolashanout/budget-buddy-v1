@@ -15,9 +15,6 @@ const BudgetSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  members: {
-    type: [mongoose.Schema.Types.ObjectId]
-  },
   balance: {
     type: mongoose.Schema.Types.Decimal128,
     default: 0.0
