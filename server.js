@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
 //define routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/settings', require('./routes/api/settings'));
-app.use('/api/budgets', require('./routes/api/budgets'));
+app.use('/api/budgets', require('./routes/api/budgets/budgets'));
+app.use('/api/budgets/accounts', require('./routes/api/budgets/accounts'));
 
 //start server
 const port = process.env.PORT | 5500;

@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check');
 
-const auth = require('../../middleware/auth');
+const auth = require('../../../middleware/auth');
 
-const User = require('../../models/User');
-const Budget = require('../../models/budget/Budget');
+const User = require('../../../models/User');
+const Budget = require('../../../models/budget/Budget');
+const Account = require('../../../models/budget/Account');
+const Transaction = require('../../../models/budget/Transaction');
 
 // @route  GET api/budgets/list
 // @desc   Get User's Budgets
@@ -19,7 +21,7 @@ router.get('/list', auth, async (req, res) => {
     await (async () => {
       await Promise.all(
         budgetIDs.map(async id => {
-          budgets.push(await Budget.findById(id).select(['name', 'accounts']));
+          budgets.push(await Budget.findById(id)); //.select(['name', 'accounts'])
         })
       );
     })();
@@ -46,7 +48,7 @@ router.post(
   ],
   async (req, res) => {
     try {
-      const { name } = req.body;
+      const { name, description } = req.body;
 
       //check for errors
       const errors = validationResult(req);
@@ -54,15 +56,18 @@ router.post(
         return res.status(400).json({ errors: errors.array() });
       }
       const user = await User.findById(req.user.id);
+
       //create budget
       const newBudget = new Budget({
         owner: user.id,
-        name
+        name,
+        description,
+        log: [new String(`${Date.now()}: Budget Created`)]
       });
+      newBudget.accounts.push(new Account({ nickname: 'My Cash' }));
 
       //save budget
       const budget = await newBudget.save();
-      console.log(budget);
 
       //update user budgets
       user.budgetIDs.push(budget.id);
@@ -77,43 +82,55 @@ router.post(
 );
 
 // @route  Post api/budgets/edit
-// @desc   Edit and Existing Budget
+// @desc   Edit an Existing Budget
 // @access Private
 router.post(
   '/edit',
   [
     auth,
     [
-      check('id', 'you must name your budget')
+      check('id', 'Invalid Request')
+        .not()
+        .isEmpty(),
+      check('name', 'Budget Must Have A Name')
         .not()
         .isEmpty()
     ]
   ],
   async (req, res) => {
     try {
-      const { name } = req.body;
+      const { id, name, description } = req.body;
 
       //check for errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
+
       const user = await User.findById(req.user.id);
-      //create budget
-      const newBudget = new Budget({
-        owner: user.id,
-        name
-      });
 
-      //save budget
-      const budget = await newBudget.save();
-      console.log(budget);
+      //get budget
+      const budget = await Budget.findById(id);
 
-      //update user budgets
-      user.budgetIDs.push(budget.id);
-      await user.save();
+      //update budget
+      if (budget.owner !== user.id) {
+        return res.status(400).json({
+          errors: [
+            {
+              param: 'budget',
+              value: `${req.body}`,
+              msg: 'Invalid Request'
+            }
+          ]
+        });
+      }
 
-      res.send('budget Added');
+      budget.name = name;
+      budget.description = description;
+
+      await budget.save();
+
+      res.send('budget Updated');
     } catch (err) {
       console.error(err.message);
       res.status(500).send('server error');
