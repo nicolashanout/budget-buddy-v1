@@ -18,6 +18,10 @@ app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/budgets', require('./routes/api/budgets/budgets'));
 app.use('/api/budgets/accounts', require('./routes/api/budgets/accounts'));
+app.use(
+  '/api/budgets/transactions',
+  require('./routes/api/budgets/transactions')
+);
 
 //start server
 const port = process.env.PORT | 5500;
