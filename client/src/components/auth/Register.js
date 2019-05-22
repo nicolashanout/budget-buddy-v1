@@ -18,28 +18,6 @@ const Register = () => {
       console.log("passwords don't match");
     } else {
       console.log(formData);
-      const newUser = {
-        name,
-        email,
-        password
-      };
-      try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        };
-        const body = JSON.stringify(newUser);
-        const res = await axios.post(
-          '/api/users', //proxy in package.json
-          body,
-          config
-        );
-
-        console.log(res);
-      } catch (error) {
-        console.error(error);
-      }
     }
   };
 
