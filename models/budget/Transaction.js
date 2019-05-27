@@ -21,7 +21,7 @@ const transactionSchema = new mongoose.Schema({
     type: String
   },
   ammount: {
-    type: mongoose.Schema.Types.Decimal128,
+    type: mongoose.Schema.Types.Number,
     default: 0.0
   }
 });

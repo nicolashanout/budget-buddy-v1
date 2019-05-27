@@ -23,7 +23,7 @@ router.post(
         .not()
         .isEmpty(),
       check('type', 'Account Must Have A type').matches(
-        'cash|savings_account|checking_account'
+        'cash|credit_account|debit_account'
       ),
       check('starting_Balance', 'Invalid Starting Blance').isDecimal()
     ]
@@ -45,8 +45,6 @@ router.post(
 
       //update budget
       if (!budget.owner.equals(user.id)) {
-        console.log(budget.owner);
-        console.log(user.id);
         return res.status(400).json({
           errors: [
             {
@@ -58,22 +56,25 @@ router.post(
         });
       }
 
-      budget.accounts.push(
-        new Account({
-          nickname: nick_name,
-          type: type,
-          balance: starting_Balance
-        })
+      const newAccount = new Account({
+        nickname: nick_name,
+        type: type,
+        balance: starting_Balance
+      });
+      budget.accounts.push(newAccount);
+
+      const newLog = new String(
+        `${Date(
+          Date.now()
+        )}: Added account (${nick_name}), with a Starting Balance of (${starting_Balance}).`
       );
-      budget.log.push(
-        new String(
-          `${Date.now()}: Added account (${nick_name}), with a Starting Balance of (${starting_Balance}).`
-        )
-      );
+      budget.log.push(newLog);
+
+      budget.balance = Number(budget.balance) + Number(starting_Balance);
 
       await budget.save();
 
-      res.send('Account Added');
+      res.send({ budget_id, newAccount, newLog, newBalance: budget.balance });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('server error');
@@ -133,15 +134,16 @@ router.post(
         budget.accounts.pull(account_id);
         budget.log.push(
           new String(
-            `${Date.now()}: Removed ${removedAccount.type} account (${
+            `${Date(Date.now())}: Removed ${removedAccount.type} account (${
               removedAccount.nickname
             }), with a Balance of (${removedAccount.balance}).`
           )
         );
 
+        budget.balance -= removedAccount.balance;
         await budget.save();
 
-        return res.send('Account Removed');
+        return res.send(budget);
       }
       res.status(400).send('Bad Request');
     } catch (err) {

@@ -7,10 +7,10 @@ const accountSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    default: 'Cash'
+    default: 'cash'
   },
   balance: {
-    type: mongoose.Schema.Types.Decimal128,
+    type: mongoose.Schema.Types.Number,
     default: 0.0
   }
 });

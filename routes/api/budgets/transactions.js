@@ -56,8 +56,6 @@ router.post(
 
       //update budget
       if (!budget.owner.equals(user.id)) {
-        console.log(budget.owner);
-        console.log(user.id);
         return res.status(400).json({
           errors: [
             {
@@ -83,16 +81,25 @@ router.post(
         account.balance += newTransaction.ammount;
         budget.log.push(
           new String(
-            `${Date.now()}: added ${newTransaction.type} on account (${
-              account.nickname
-            }), with an amount off (${newTransaction.ammount}).`
+            `${Date(Date.now())}: added ${newTransaction.transactionType} (${
+              newTransaction.name
+            }) on account (${account.nickname}), with an amount off (${
+              newTransaction.ammount
+            }).
+            Description: ${description}`
           )
         );
         budget.balance += newTransaction.ammount;
 
         await budget.save();
 
-        return res.send('Transaction Added ');
+        return res.send({
+          newTransaction,
+          budget_id,
+          account_id,
+          budget_balance: budget.balance,
+          account_balance: account.balance
+        });
       }
       res.status(400).send('Bad Request');
     } catch (err) {

@@ -1,5 +1,5 @@
 .container {
-  max-width: 80%;
+  max-width: 90%;
   margin: auto; }
 
 .h-line {
@@ -86,10 +86,16 @@ li {
   color: white;
   border: none;
   border-radius: 0.2rem;
-  text-align: center; }
+  text-align: center;
+  cursor: pointer; }
   .btn:hover {
     background: #ffd2a6;
     color: #333333; }
+  .btn-danger {
+    background: #ff0000; }
+    .btn-danger:hover {
+      background: #ffafaf;
+      color: #333333; }
 
 .container {
   padding: 2rem; }
@@ -97,8 +103,30 @@ li {
 .lead {
   font-size: 1.2rem; }
 
+.alert {
+  background: #ffd2a6;
+  color: #f4f4f4;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  display: block;
+  border: 0.1rem solid #cc8034; }
+  .alert-danger {
+    background: #f0563a;
+    color: #000000; }
+  .alert-success {
+    background: green;
+    color: #000000; }
+
+.loading {
+  position: fixed;
+  top: 45%;
+  left: 45%;
+  width: 10%;
+  height: 10%; }
+
 .navbar {
   position: sticky;
+  overflow: hidden;
   top: 0;
   left: 0;
   right: 0;
@@ -164,25 +192,171 @@ li {
         margin: 0.5rem; }
 
 #register h1,
-#login h1 {
+#login h1,
+#create-budget h1 {
   font-size: 2rem;
   color: #cc8034;
   margin: 1rem 0rem; }
 
 #register form .form-group,
-#login form .form-group {
+#login form .form-group,
+#create-budget form .form-group {
   padding: 0.5rem 0rem; }
   #register form .form-group input,
-  #login form .form-group input {
+  #login form .form-group input,
+  #create-budget form .form-group input {
     display: block;
     width: 100%;
     height: 2rem;
     border-radius: 0.2rem; }
+  #register form .form-group textarea,
+  #login form .form-group textarea,
+  #create-budget form .form-group textarea {
+    height: 10rem;
+    width: 100%; }
 
 #register form .btn,
-#login form .btn {
+#login form .btn,
+#create-budget form .btn {
   margin: 0.5rem 0rem; }
 
 #register form a,
-#login form a {
+#login form a,
+#create-budget form a {
   color: #cc8034; }
+
+#dashboard h1 {
+  font-size: 2.5rem;
+  margin: 1rem 0rem; }
+
+#dashboard .actions .padding-s {
+  padding: 0.2rem; }
+
+#dashboard .inner-dashboard {
+  display: flex;
+  justify-content: space-between;
+  min-height: 20rem;
+  margin-top: 1rem; }
+  #dashboard .inner-dashboard .budget-list {
+    width: 20%;
+    min-width: 8rem;
+    border-right: green 0.1rem solid;
+    padding: 0.5rem; }
+    #dashboard .inner-dashboard .budget-list .heading {
+      display: flex;
+      justify-content: space-between;
+      align-content: center;
+      align-items: center; }
+      #dashboard .inner-dashboard .budget-list .heading .add-budget {
+        margin-top: 0;
+        padding: 0.2rem; }
+    #dashboard .inner-dashboard .budget-list .budget-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      overflow: hidden;
+      background: #e0e0e0;
+      width: 100%; }
+      #dashboard .inner-dashboard .budget-list .budget-item .name {
+        width: 60%;
+        overflow: hidden; }
+      #dashboard .inner-dashboard .budget-list .budget-item .balance {
+        width: 40%; }
+      #dashboard .inner-dashboard .budget-list .budget-item p.positive-balance {
+        color: green; }
+      #dashboard .inner-dashboard .budget-list .budget-item p.negative-balance {
+        color: red; }
+      #dashboard .inner-dashboard .budget-list .budget-item:hover {
+        background: #d0d0d0;
+        cursor: pointer; }
+    #dashboard .inner-dashboard .budget-list .active {
+      background: yellow; }
+  #dashboard .inner-dashboard .budget-details {
+    width: 75%;
+    padding: 0.5rem; }
+    #dashboard .inner-dashboard .budget-details .add-account-form fieldset,
+    #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset {
+      padding: 1rem; }
+      #dashboard .inner-dashboard .budget-details .add-account-form fieldset .form-group,
+      #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset .form-group {
+        display: flex;
+        margin-top: 0.5rem;
+        justify-items: center;
+        align-items: center;
+        align-content: center; }
+        #dashboard .inner-dashboard .budget-details .add-account-form fieldset .form-group label,
+        #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset .form-group label {
+          width: 20%; }
+        #dashboard .inner-dashboard .budget-details .add-account-form fieldset .form-group input,
+        #dashboard .inner-dashboard .budget-details .add-account-form fieldset .form-group select,
+        #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset .form-group input,
+        #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset .form-group select {
+          width: 80%;
+          height: 2rem; }
+      #dashboard .inner-dashboard .budget-details .add-account-form fieldset .btn,
+      #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset .btn {
+        margin: auto;
+        margin-top: 0.5rem;
+        width: 50%; }
+      #dashboard .inner-dashboard .budget-details .add-account-form fieldset textarea,
+      #dashboard .inner-dashboard .budget-details .add-transaction-form fieldset textarea {
+        width: 100%;
+        min-height: 3rem;
+        height: 5rem; }
+    #dashboard .inner-dashboard .budget-details .detail-group {
+      padding: 1rem;
+      margin: 1rem 0rem;
+      border-radius: 1rem;
+      background: #eeeeee; }
+      #dashboard .inner-dashboard .budget-details .detail-group .collapsed {
+        height: 2rem;
+        overflow: hidden; }
+      #dashboard .inner-dashboard .budget-details .detail-group .detail-heading {
+        display: flex;
+        justify-content: space-between; }
+        #dashboard .inner-dashboard .budget-details .detail-group .detail-heading .detail-lable {
+          line-height: 1.8rem;
+          margin-right: 2rem; }
+      #dashboard .inner-dashboard .budget-details .detail-group .account {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: #000000 1px solid;
+        margin: 0.5rem 0rem;
+        padding: 0.5rem; }
+        #dashboard .inner-dashboard .budget-details .detail-group .account .account-heading {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5rem 0rem; }
+          #dashboard .inner-dashboard .budget-details .detail-group .account .account-heading .actions {
+            padding-left: 1rem;
+            width: 4rem;
+            display: flex;
+            justify-content: space-between; }
+        #dashboard .inner-dashboard .budget-details .detail-group .account .account-details {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5rem 0rem; }
+      #dashboard .inner-dashboard .budget-details .detail-group .log-entry {
+        line-height: 2rem; }
+
+#dashboard .add-budget {
+  margin-top: 5rem; }
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    margin: auto; }
+  .hide-md {
+    display: none; } }
+
+@media (max-width: 453px) {
+  .hide-sm {
+    display: none; }
+  .landing .landing-inner .buttons {
+    flex-direction: column;
+    width: 85%;
+    min-width: 10rem; }
+    .landing .landing-inner .buttons a {
+      width: 50%; } }

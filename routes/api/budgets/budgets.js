@@ -21,7 +21,12 @@ router.get('/list', auth, async (req, res) => {
     await (async () => {
       await Promise.all(
         budgetIDs.map(async id => {
-          budgets.push(await Budget.findById(id)); //.select(['name', 'accounts'])
+          const budget = await Budget.findById(id); //.select(['name', 'accounts'])
+          if (budget) {
+            if (budget.owner.equals(req.user.id)) {
+              budgets.push(budget);
+            }
+          }
         })
       );
     })();
@@ -62,9 +67,9 @@ router.post(
         owner: user.id,
         name,
         description,
-        log: [new String(`${Date.now()}: Budget Created`)]
+        log: [new String(`${Date(Date.now())}: Budget Created`)]
       });
-      newBudget.accounts.push(new Account({ nickname: 'My Cash' }));
+      newBudget.accounts.push(new Account({ nickname: 'Cash' }));
 
       //save budget
       const budget = await newBudget.save();
@@ -73,7 +78,7 @@ router.post(
       user.budgetIDs.push(budget.id);
       await user.save();
 
-      res.send('budget Added');
+      res.json(budget);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('server error');
@@ -113,7 +118,7 @@ router.post(
       const budget = await Budget.findById(id);
 
       //update budget
-      if (budget.owner !== user.id) {
+      if (!budget.owner.equals(user.id)) {
         return res.status(400).json({
           errors: [
             {
@@ -127,10 +132,13 @@ router.post(
 
       budget.name = name;
       budget.description = description;
+      budget.log.push(
+        `${Date(Date.now())}: Budget name and/or description changed`
+      );
 
       await budget.save();
 
-      res.send('budget Updated');
+      res.json(budget);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('server error');
